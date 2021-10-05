@@ -7,74 +7,51 @@ from searchPlus import (
 
 def tupleAdd(first, *others):
     temp = list(first)
-    for tuple in others:
-        for i in range(min(len(temp), len(tuple))):
-            temp[i] += tuple[i]
-    return temp
+    for tuple_ in others:
+        for i in range(min(len(temp), len(tuple_))):
+            temp[i] += tuple_[i]
+    return tuple(temp)
 
 def tupleSub(first, *others):
     temp = list(first)
-    for tuple in others:
-        for i in range(min(len(temp), len(tuple))):
-            temp[i] -= tuple[i]
-    return temp
+    for tuple_ in others:
+        for i in range(min(len(temp), len(tuple_))):
+            temp[i] -= tuple_[i]
+    return tuple(temp)
             
-class Direction(Enum):
-    NONE = 0
-    UP = 1
-    DOWN = 2
-    LEFT = 3
-    RIGHT = 4
-    ERROR = 5
-
-    @staticmethod
-    def getDirectionList():
-        return (Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT)
 
 class PuzzleRobotsState:
     def __init__(self, size, blacks, white, curr_cost=0):
         #Size of the board
         self.size = size
-        #Tuple of the coordinates of all black pieces
+        #List of the coordinates of all black pieces
         self.black = blacks
         #white coordinates
         self.white = white
         #Current cost
         self.curr_cost = curr_cost
 
+    def clone(self):
+        return PuzzleRobotsState(self.size, self.size, list(self.blacks), self.white, self.curr_cost)
+
 class PuzzleRobotsAction:
-    def __init__(self, moving, stop, direction=Direction.NONE):
+    def __init__(self, moving, stop):
         #Coordinates of the moving piece
         self.moving = moving
         #Coordinates of the piece stoping the movement
         self.stop = stop
-        #Direction of the movement
-        self.direction = direction
         #Final Position
         self.final_pos = ()
-
-
-    """Get the direction of the movement"""
-    def getActionDirection(self):
-        if(self.direction == Direction.NONE):
-            if self.moving[0] == self.stop[0]:
-                if self.moving[0] > self.stop[0]:
-                    self.direction = Direction.LEFT
-                elif self.moving[0] < self.stop[0]:
-                    self.direction = Direction.RIGHT
-            elif self.moving[1] == self.stop[1]:
-                if self.moving[1] > self.stop[1]:
-                    self.direction = Direction.DOWN
-                elif self.moving[1] < self.stop[1]:
-                    self.direction = Direction.UP
-            else:
-                self.direction = Direction.ERROR
-        return self.direction
 
     """Get the final position of the piece, after the action"""
     def getFinalPos(self):
         if self.final_pos == ():
-            self.final_pos = tupleAdd(self.stop, ((0,-1), (0,1), (1,0), (-1,0))[self.getActionDirection()-1])
+            if self.moving[0] == self.stop[0]:
+                self.final_pos = (self.stop[0], self.stop[1] + (1 if self.stop[1] < self.moving[1] else -1))
+            elif self.moving[1] == self.stop[1]:
+                self.final_pos = (self.stop[0] + (1 if self.stop[0] < self.moving[0] else -1), self.stop[1])
+            else:
+                raise RuntimeError
         return self.final_pos
 
     def actionCost(self):
@@ -88,24 +65,21 @@ class PuzzleRobots(Problem):
         self.goal = goal
 
     def actions(self, state):
-        """Return the actions that can be executed in the given
-        state. The result would typically be a list, but if there are
-        many actions, consider yielding them one at a time in an
-        iterator, rather than building them all at once."""
-
-        #Some invalid actions may occur when multiple pieces are on the same line
-        #   o -> o -> o
-        
-
+        for l in range(2):
+            for i in range(state.size):
+                col = [c for c in state.blacks + state.white if c[l] == i].sort
+                for a in range(len(col)-1):
+                    if a != len(col)-2:
+                        yield PuzzleRobotsAction(col[a], col[a+1])
+                    elif a != 0:
+                        yield PuzzleRobotsAction(col[a], col[a-1])
 
     def result(self, state, action):
-        if state.white == action.moving:
-            state.white = action.getFinalPos()
+        """Return the state that results from executing the given
+        action in the given state. The action must be one of
+        self.actions(state)."""
+        raise NotImplementedError
             
-            return state
-        else:
-            for
-
     def goal_test(self, state):
         return self.goal == state.white
 
