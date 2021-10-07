@@ -25,7 +25,7 @@ class PuzzleRobotsState:
         #Size of the board
         self.size = size
         #List of the coordinates of all black pieces
-        self.black = blacks
+        self.blacks = blacks
         #white coordinates
         self.white = white
         #Current cost
