@@ -19,20 +19,18 @@ def tupleSub(first, *others):
             temp[i] -= tuple_[i]
     return tuple(temp)
             
-
 class PuzzleRobotsState:
-    def __init__(self, size, blacks, white, curr_cost=0):
+    def __init__(self, size, blacks, white):
         #Size of the board
         self.size = size
         #List of the coordinates of all black pieces
         self.blacks = blacks
         #white coordinates
         self.white = white
-        #Current cost
-        self.curr_cost = curr_cost
 
     def clone(self):
-        return PuzzleRobotsState(self.size, self.size, list(self.blacks), self.white, self.curr_cost)
+        return PuzzleRobotsState(self.size, self.size, list(self.blacks), self.white)
+
 
 class PuzzleRobotsAction:
     def __init__(self, moving, stop):
@@ -54,14 +52,15 @@ class PuzzleRobotsAction:
                 raise RuntimeError
         return self.final_pos
 
+    """Get the cost of the action"""
     def actionCost(self):
-        return abs([i for i in tupleSub(self.moving - self.getFinalPos()) if i != 0][0])
+        return abs(filter( tupleSub(self.moving - self.getFinalPos()), lambda i: i != 0)[0])
 
 
 class PuzzleRobots(Problem):
 
-    def __init__(self, initial=PuzzleRobotsState(0), goal=None):
-        self.initial = initial #Initial State
+    def __init__(self, initial, goal=None):
+        self.initial = initial
         self.goal = goal
 
     def actions(self, state):
@@ -75,10 +74,15 @@ class PuzzleRobots(Problem):
                         yield PuzzleRobotsAction(col[a], col[a-1])
 
     def result(self, state, action):
-        """Return the state that results from executing the given
-        action in the given state. The action must be one of
-        self.actions(state)."""
-        raise NotImplementedError
+        new_state = state.clone()
+        if(new_state.white == action.moving):
+            new_state.white = action.getFinalPos()
+        else:
+            for i in range(len(new_state.blacks)):
+                if(new_state.blacks[i] == action.moving):
+                    new_state.blacks[i] = action.getFinalPos()
+                    break
+        return new_state
             
     def goal_test(self, state):
         return self.goal == state.white
@@ -89,7 +93,7 @@ class PuzzleRobots(Problem):
         is such that the path doesn't matter, this function will only look at
         state2.  If the path does matter, it will consider c and maybe state1
         and action. The default method costs 1 for every step in the path."""
-        return c + 1
+        return c + action.actionCost()
 
     def value(self, state):
         """For optimization problems, each state has a value.  Hill-climbing
