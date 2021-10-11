@@ -1,7 +1,3 @@
-
-from enum import Enum
-from typing import Sized
-from source.utils import RIGHT
 from searchPlus import (
     Problem, astar_search
 )
@@ -30,7 +26,7 @@ class PuzzleRobotsState:
         self.white = white
 
     def clone(self):
-        return PuzzleRobotsState(self.size, self.size, list(self.blacks), self.white)
+        return PuzzleRobotsState(self.size, list(self.blacks), self.white)
 
     def display(self):
         bar = ['_']*self.size
@@ -38,15 +34,19 @@ class PuzzleRobotsState:
             print(bar)
             for col in range(self.size):
                 coords = (col, 4-row)
-                if col == row and col == self.size//2 : cont = 'X'
-                elif coords in self.blacks: cont = 'B'
-                elif coords == self.white: cont = 'W'
+                cont = ''
+                if col == row and col == self.size//2 : 
+                    cont = 'X'
+                elif coords in self.blacks: 
+                    cont = 'B'
+                elif coords == self.white: 
+                    cont = 'W'
                 print('| '+cont+' |')
             print(bar)
 
     def __eq__(self, obj):
         return isinstance(obj, PuzzleRobotsState) and self.size == obj.size and \
-            self.white == obj.white and (self.blacks == obj.blacks).all()
+            self.white == obj.white and self.blacks == obj.blacks
 
     def __ne__(self, obj):
         return not self == obj
@@ -61,6 +61,9 @@ class PuzzleRobotsAction:
         #Final Position
         self.final_pos = ()
 
+    def display(self):
+        print("from: " + str(self.moving[0])+", "+str(self.moving[1])+" collinding with "+str(self.stop[0])+", "+str(self.stop[1]))
+
     """Get the final position of the piece, after the action"""
     def getFinalPos(self):
         if self.final_pos == ():
@@ -74,7 +77,7 @@ class PuzzleRobotsAction:
 
     """Get the cost of the action"""
     def actionCost(self):
-        return abs(filter( tupleSub(self.moving - self.getFinalPos()), lambda i: i != 0)[0])
+        return abs(list(filter(lambda i: i != 0, tupleSub(self.moving, self.getFinalPos())))[0])
 
 
 class PuzzleRobots(Problem):
@@ -86,11 +89,12 @@ class PuzzleRobots(Problem):
     def actions(self, state):
         for l in range(2):
             for i in range(state.size):
-                col = [c for c in state.blacks + state.white if c[l] == i].sort
-                for a in range(len(col)-1):
-                    if a != len(col)-2:
+                col = [c for c in state.blacks + [state.white] if c[l] == i]
+                col.sort()
+                for a in range(len(col)):
+                    if a != len(col)-1:
                         yield PuzzleRobotsAction(col[a], col[a+1])
-                    elif a != 0:
+                    if a != 0:
                         yield PuzzleRobotsAction(col[a], col[a-1])
 
     def result(self, state, action):
@@ -155,3 +159,21 @@ class Solver:
 
     def search(self, problem):
         return astar_search(problem, ) 
+
+
+
+#--TESTS ERASE ME LATER
+init = PuzzleRobotsState(5, [(3,4), (0,2), (1,1), (3,1), (4,0)], (1,4))
+prob = PuzzleRobots(init, (2,2))
+i=0
+
+
+for act in prob.actions(prob.initial):
+    if i==0:
+        new_state = prob.result(init, act)
+        #print(act.actionCost())
+        i+=1
+    
+    act.display()
+    print(act.actionCost())
+    print(act.getFinalPos())
