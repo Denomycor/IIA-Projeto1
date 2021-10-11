@@ -51,6 +51,10 @@ class PuzzleRobotsState:
     def __ne__(self, obj):
         return not self == obj
 
+    def getWhitePos(self):
+        return white
+
+
 
 class PuzzleRobotsAction:
     def __init__(self, moving, stop):
@@ -155,3 +159,4 @@ class Solver:
 
     def search(self, problem):
         return astar_search(problem, ) 
+
