@@ -34,15 +34,16 @@ class PuzzleRobotsState:
             print(bar)
             for col in range(self.size):
                 coords = (col, 4-row)
-                cont = ''
-                if col == row and col == self.size//2 : 
-                    cont = 'X'
-                elif coords in self.blacks: 
-                    cont = 'B'
-                elif coords == self.white: 
-                    cont = 'W'
-                print('| '+cont+' |')
+                if col == row and col == self.size//2 : cont = 'X'
+                elif coords in self.blacks: cont = 'B'
+                elif coords == self.white: cont = 'W'
+                print('| '+ cont +' |')
             print(bar)
+
+    def whiteDist(self, other):
+        dist = tupleSub(self.white, other.white)
+        return abs(dist[0]) + abs(dist[1])
+
 
     def __eq__(self, obj):
         return isinstance(obj, PuzzleRobotsState) and self.size == obj.size and \
@@ -50,6 +51,13 @@ class PuzzleRobotsState:
 
     def __ne__(self, obj):
         return not self == obj
+<<<<<<< Updated upstream
+=======
+    
+    def __hash__(self):
+        return hash( (self.size, tuple(self.blacks), self.white) )
+
+>>>>>>> Stashed changes
 
 class PuzzleRobotsAction:
     def __init__(self, moving, stop):
@@ -138,7 +146,7 @@ class Solver:
     def __call__(self, percept):
         """[Figure 3.1] Formulate a goal and problem, then
         search for a sequence of actions to solve it."""
-        self.state = self.update_state(self.state, percept)
+        self.state = self.update_state(self.state)
         if not self.seq:
             goal = self.formulate_goal(self.state)
             problem = self.formulate_problem(self.state, goal)
@@ -158,7 +166,6 @@ class Solver:
 
     def search(self, problem):
         return astar_search(problem, ) 
-
 
 
 #--TESTS ERASE ME LATER
