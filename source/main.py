@@ -29,12 +29,12 @@ class PuzzleRobotsState:
         return PuzzleRobotsState(self.size, list(self.blacks), self.white)
 
     def display(self):
-        lowbar = '-'*self.size*self.size
-        print('_'*self.size*self.size)
+        lowbar = '-'*(self.size*4+1)
+        print('_'*(self.size*4+1))
         for row in range(self.size):
-            print('|')
+            print('| ', end = '')
             for col in range(self.size):
-                cont = ''
+                cont = ' '
                 coords = (col, 4-row)
                 if col == row and col == self.size//2 : cont = 'X'
                 elif coords in self.blacks: cont = 'B'
@@ -45,7 +45,6 @@ class PuzzleRobotsState:
     def whiteDist(self, other):
         dist = tupleSub(self.white, other.white)
         return abs(dist[0]) + abs(dist[1])
-
 
     def __eq__(self, obj):
         return isinstance(obj, PuzzleRobotsState) and self.size == obj.size and \
