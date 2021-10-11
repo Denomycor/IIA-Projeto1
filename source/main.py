@@ -1,5 +1,6 @@
 
 from enum import Enum
+from typing import Sized
 from source.utils import RIGHT
 from searchPlus import (
     Problem, astar_search
@@ -30,6 +31,24 @@ class PuzzleRobotsState:
 
     def clone(self):
         return PuzzleRobotsState(self.size, self.size, list(self.blacks), self.white)
+
+    def display(self):
+        adjusty = 3
+        for row in range(len(2*self.size+1)):
+            adjustx = -1
+            for col in range(len(self.size*2+1)):
+                coords = (adjustx+col, adjusty+row)
+                if row % 2 == 0: print('_')
+                else:
+                    if col % 2 == 0: print('|')
+                    else:
+                        if col == row and col == self.size: print('X')
+                        elif coords in self.blacks: print('B')
+                        elif coords == self.white: print('W')
+                        else: print(' ')
+                    adjustx -= 1
+            adjusty -= 3
+
 
 
 class PuzzleRobotsAction:
