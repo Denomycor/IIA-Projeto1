@@ -42,10 +42,6 @@ class PuzzleRobotsState:
                 print(cont +' | ', end = '')
             print('\n' + lowbar)
 
-    def whiteDist(self, other):
-        dist = tupleSub(self.white, other.white)
-        return abs(dist[0]) + abs(dist[1])
-
     def __eq__(self, obj):
         return isinstance(obj, PuzzleRobotsState) and self.size == obj.size and \
             self.white == obj.white and self.blacks == obj.blacks
@@ -170,6 +166,7 @@ class Solver:
 init = PuzzleRobotsState(5, [(3,4), (0,2), (1,1), (3,1), (4,0)], (1,4))
 prob = PuzzleRobots(init, (2,2))
 
+init.display()
 # i=0
 # for act in prob.actions(prob.initial):
 #     if i==0:
@@ -183,7 +180,7 @@ prob = PuzzleRobots(init, (2,2))
 
 
 #----
-solver = Solver(init)
+#solver = Solver(init)
 
-print(solver(init))
+#print(solver(init))
 
