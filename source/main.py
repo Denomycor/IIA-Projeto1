@@ -29,8 +29,8 @@ class PuzzleRobotsState:
         return PuzzleRobotsState(self.size, list(self.blacks), self.white)
 
     def display(self):
-        lowbar = '-'*(self.size*4+1)
-        print('_'*(self.size*4+1))
+        lowbar = '+' = '---+'*self.size
+        print(lowbar)
         for row in range(self.size):
             print('| ', end = '')
             for col in range(self.size):
