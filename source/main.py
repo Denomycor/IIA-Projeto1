@@ -2,13 +2,6 @@ from searchPlus import (
     Problem, astar_search
 )
 
-def tupleAdd(first, *others):
-    temp = list(first)
-    for tuple_ in others:
-        for i in range(min(len(temp), len(tuple_))):
-            temp[i] += tuple_[i]
-    return tuple(temp)
-
 def tupleSub(first, *others):
     temp = list(first)
     for tuple_ in others:
