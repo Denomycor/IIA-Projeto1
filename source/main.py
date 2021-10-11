@@ -51,13 +51,10 @@ class PuzzleRobotsState:
 
     def __ne__(self, obj):
         return not self == obj
-<<<<<<< Updated upstream
-=======
     
     def __hash__(self):
         return hash( (self.size, tuple(self.blacks), self.white) )
 
->>>>>>> Stashed changes
 
 class PuzzleRobotsAction:
     def __init__(self, moving, stop):
