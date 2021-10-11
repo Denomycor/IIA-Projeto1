@@ -44,6 +44,13 @@ class PuzzleRobotsState:
                 print('| '+cont+' |')
             print(bar)
 
+    def __eq__(self, obj):
+        return isinstance(obj, PuzzleRobotsState) and self.size == obj.size and \
+            self.white == obj.white and (self.blacks == obj.blacks).all()
+
+    def __ne__(self, obj):
+        return not self == obj
+
 
 class PuzzleRobotsAction:
     def __init__(self, moving, stop):
@@ -147,4 +154,4 @@ class Solver:
         return PuzzleRobots(state, goal)
 
     def search(self, problem):
-        return astar_search(problem, ) #
+        return astar_search(problem, ) 
