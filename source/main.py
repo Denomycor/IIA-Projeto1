@@ -29,16 +29,18 @@ class PuzzleRobotsState:
         return PuzzleRobotsState(self.size, list(self.blacks), self.white)
 
     def display(self):
-        bar = ['_']*self.size
+        lowbar = '-'*self.size*self.size
+        print('_'*self.size*self.size)
         for row in range(self.size):
-            print(bar)
+            print('|')
             for col in range(self.size):
+                cont = ''
                 coords = (col, 4-row)
                 if col == row and col == self.size//2 : cont = 'X'
                 elif coords in self.blacks: cont = 'B'
                 elif coords == self.white: cont = 'W'
-                print('| '+ cont +' |')
-            print(bar)
+                print(cont +' | ', end = '')
+            print('\n' + lowbar)
 
     def whiteDist(self, other):
         dist = tupleSub(self.white, other.white)
