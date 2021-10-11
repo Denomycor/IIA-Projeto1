@@ -33,22 +33,16 @@ class PuzzleRobotsState:
         return PuzzleRobotsState(self.size, self.size, list(self.blacks), self.white)
 
     def display(self):
-        adjusty = 3
-        for row in range(len(2*self.size+1)):
-            adjustx = -1
-            for col in range(len(self.size*2+1)):
-                coords = (adjustx+col, adjusty+row)
-                if row % 2 == 0: print('_')
-                else:
-                    if col % 2 == 0: print('|')
-                    else:
-                        if col == row and col == self.size: print('X')
-                        elif coords in self.blacks: print('B')
-                        elif coords == self.white: print('W')
-                        else: print(' ')
-                    adjustx -= 1
-            adjusty -= 3
-
+        bar = ['_']*self.size
+        for row in range(self.size):
+            print(bar)
+            for col in range(self.size):
+                coords = (col, 4-row)
+                if col == row and col == self.size//2 : cont = 'X'
+                elif coords in self.blacks: cont = 'B'
+                elif coords == self.white: cont = 'W'
+                print('| '+cont+' |')
+            print(bar)
 
 
 class PuzzleRobotsAction:
