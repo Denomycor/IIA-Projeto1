@@ -164,18 +164,17 @@ class Solver:
 #--TESTS ERASE ME LATER
 init = PuzzleRobotsState(5, [(3,4), (0,2), (1,1), (3,1), (4,0)], (1,4))
 prob = PuzzleRobots(init, (2,2))
-i=0
 
-
-for act in prob.actions(prob.initial):
-    if i==0:
-        new_state = prob.result(init, act)
-        #print(act.actionCost())
-        i+=1
+# i=0
+# for act in prob.actions(prob.initial):
+#     if i==0:
+#         new_state = prob.result(init, act)
+#         #print(act.actionCost())
+#         i+=1
     
-    act.display()
-    print(act.actionCost())
-    print(act.getFinalPos())
+#     act.display()
+#     print(act.actionCost())
+#     print(act.getFinalPos())
 
 
 #----
