@@ -1,8 +1,9 @@
 
 from enum import Enum
+from typing import Sized
 from source.utils import RIGHT
 from searchPlus import (
-    Problem
+    Problem, astar_search
 )
 
 def tupleAdd(first, *others):
@@ -30,6 +31,25 @@ class PuzzleRobotsState:
 
     def clone(self):
         return PuzzleRobotsState(self.size, self.size, list(self.blacks), self.white)
+
+    def display(self):
+        bar = ['_']*self.size
+        for row in range(self.size):
+            print(bar)
+            for col in range(self.size):
+                coords = (col, 4-row)
+                if col == row and col == self.size//2 : cont = 'X'
+                elif coords in self.blacks: cont = 'B'
+                elif coords == self.white: cont = 'W'
+                print('| '+cont+' |')
+            print(bar)
+
+    def __eq__(self, obj):
+        return isinstance(obj, PuzzleRobotsState) and self.size == obj.size and \
+            self.white == obj.white and (self.blacks == obj.blacks).all()
+
+    def __ne__(self, obj):
+        return not self == obj
 
 
 class PuzzleRobotsAction:
@@ -101,3 +121,37 @@ class PuzzleRobots(Problem):
         raise NotImplementedError
 
 
+class Solver:
+
+    """Abstract framework for a problem-solving agent. [Figure 3.1]"""
+
+    def __init__(self, initial_state=None):
+        """State is an sbstract representation of the state
+        of the world, and seq is the list of actions required
+        to get to a particular state from the initial state(root)."""
+        self.state = initial_state
+        self.seq = []
+
+    def __call__(self, percept):
+        """[Figure 3.1] Formulate a goal and problem, then
+        search for a sequence of actions to solve it."""
+        self.state = self.update_state(self.state, percept)
+        if not self.seq:
+            goal = self.formulate_goal(self.state)
+            problem = self.formulate_problem(self.state, goal)
+            self.seq = self.search(problem)
+            if not self.seq:
+                return None
+        return self.seq.pop(0)
+
+    def update_state(self, percept):
+        return percept.clone()
+
+    def formulate_goal(self, state):
+        return PuzzleRobotsState(state.size, state.blacks, (state.size//2,state.size//2))
+
+    def formulate_problem(self, state, goal):
+        return PuzzleRobots(state, goal)
+
+    def search(self, problem):
+        return astar_search(problem, ) 
