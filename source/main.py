@@ -2,7 +2,7 @@
 from enum import Enum
 from source.utils import RIGHT
 from searchPlus import (
-    Problem
+    Problem, astar_search
 )
 
 def tupleAdd(first, *others):
@@ -125,13 +125,13 @@ class Solver:
         return self.seq.pop(0)
 
     def update_state(self, percept):
-        raise NotImplementedError
+        return percept.clone()
 
     def formulate_goal(self, state):
-        raise NotImplementedError
+        return PuzzleRobotsState(state.size, state.blacks, (state.size//2,state.size//2))
 
     def formulate_problem(self, state, goal):
-        raise NotImplementedError
+        return PuzzleRobots(state, goal)
 
     def search(self, problem):
-        raise NotImplementedError
+        return astar_search(problem, ) #
